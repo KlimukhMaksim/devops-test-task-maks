@@ -1,0 +1,39 @@
+name: MyFirstCI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      log_name:
+        description: "Optional log-name"
+        required: false
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Make executable
+        run: chmod +x scripts/hello.sh
+
+      - name: Run script
+        run: ./scripts/hello.sh
+
+      - name: Verify log file created
+        run: |
+          LOGFILE=$(ls -t logs/log-*.txt | head -n 1)
+          echo "Last log: $LOGFILE"
+          grep "Hello form Bash!" "$LOGFILE"
+          grep "Date_time:" "$LOGFILE"
+          grep -E "File count: [0-9]+" "$LOGFILE"
+
+      - name: Upload log artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: latest-log
+          path: logs/log-*.txt
