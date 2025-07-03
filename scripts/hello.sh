@@ -1,10 +1,16 @@
 #!/bin/bash
 
-TIMEZONE="Europe/Kyiv"
-TIMESTAMP=$(TZ="$TIMEZONE" date +"%Y%m%d_%H%M%S")
-LOGNAME="log-$TIMESTAMP.txt"
+TIMESTAMP=$(TZ="Europe/Kyiv" date +"%Y%m%d_%H%M%S")
 LOGS_DIR="logs"
 OUTPUT_DIR="output"
+HISTORY_FILE="$LOGS_DIR/history.txt"
+CUSTOM_NAME="$1"
+
+if [ -n "$CUSTOM_NAME" ]; then
+    LOGNAME="log-$CUSTOM_NAME.txt"
+else
+    LOGNAME="log-$TIMESTAMP.txt"
+fi
 
 hello() {
   echo "Hello from Bash!"
@@ -27,4 +33,9 @@ write_log() {
   } | tee "$LOGS_DIR/$LOGNAME"
 }
 
+update_history() {
+    echo "$TIMESTAMP $LOGNAME" >> "$HISTORY_FILE"
+}
+
 write_log
+update_history
