@@ -28,7 +28,7 @@ jobs:
         run: |
           LOGFILE=$(ls -t logs/log-*.txt | head -n 1)
           echo "Last log: $LOGFILE"
-          grep "Hello form Bash!" "$LOGFILE"
+          grep "Hello from Bash!" "$LOGFILE"
           grep "Date_time:" "$LOGFILE"
           grep -E "File count: [0-9]+" "$LOGFILE"
 
