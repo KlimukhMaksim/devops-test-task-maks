@@ -9,7 +9,7 @@ This repository contains a test assignment for the position of DevOps Trainee. I
 ### How to run the script locally
 ````
 chmod +x scripts/hello.sh
-./scripts/hello.sh
+./scripts/hello.sh log_name (optional)
 ````
 
 ### How to trigger workflow manually

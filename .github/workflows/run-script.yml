@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       log_name:
-        description: "Optional log-name"
+        description: "Optional log filename"
         required: false
 
 jobs:
@@ -18,11 +18,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Make executable
+      - name: Make script executable
         run: chmod +x scripts/hello.sh
 
-      - name: Run script
-        run: ./scripts/hello.sh
+      - name: Run the Bash script
+        run: |
+          LOG_NAME="${{ github.event.inputs.log_name }}"
+          if [ -n "$LOG_NAME" ]; then
+            ./scripts/hello.sh "$LOG_NAME"
+          else
+            ./scripts/hello.sh
+          fi
 
       - name: Verify log file created
         run: |
@@ -31,6 +37,12 @@ jobs:
           grep "Hello from Bash!" "$LOGFILE"
           grep "Date_time:" "$LOGFILE"
           grep -E "File count: [0-9]+" "$LOGFILE"
+
+      - name: Verify history log updated
+        run: |
+          echo "Checking logs/history.txt..."
+          tail -n 5 logs/history.txt
+          grep "$(basename $LATEST_LOG)" logs/history.txt
 
       - name: Upload log artifact
         uses: actions/upload-artifact@v4
